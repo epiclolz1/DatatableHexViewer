@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Orion Drift Datatable Viewer</title>
+<title>Color Preset Viewer</title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -379,7 +379,7 @@
                     <th>Primary</th>
                     <th>Secondary</th>
                     <th>Emissive</th>
-                    <th>Copy All</th>
+                    <th>Copying</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -430,11 +430,25 @@ function extractPresets(obj) {
     return results;
 }
 
+// Keep a reference to the DataTable instance outside the function
 let dataTable;
+
 function populateTable(presets) {
+    // ---- START: EDITED SECTION ----
+
+    // 1. Check if the DataTable has been initialized before.
+    // If it has, we need to destroy it before adding new data.
+    if (dataTable) {
+        dataTable.destroy();
+    }
+
+    // 2. Get a reference to the table body and clear its current content.
     const tableBody = document.querySelector("#colorTable tbody");
     tableBody.innerHTML = "";
 
+    // ---- END: EDITED SECTION ----
+
+    // 3. Loop through the new preset data and build the table rows.
     presets.forEach(preset => {
         const row = document.createElement("tr");
 
@@ -474,14 +488,12 @@ function populateTable(presets) {
         tableBody.appendChild(row);
     });
 
-    if (dataTable) {
-        dataTable.clear().destroy();
-    }
+    // 4. Now that the table has the new rows, initialize a new DataTable instance.
     dataTable = new DataTable('#colorTable', {
         paging: false,
         scrollY: "60vh",
         scrollCollapse: true,
-        dom: 'frtip'
+        dom: 'frtip' // 'f' for filter, 'r' for processing, 't' for table, 'i' for info, 'p' for paging
     });
 }
 </script>
